@@ -1,17 +1,19 @@
 use std::{env, fs};
 use description::Description;
 
+use crate::description::Action;
+
 mod description;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    if args[1] === "--help" || args.len() != 3 {
-        panic!("usage: ft_turing [-h] jsonfile input\n\n" +
-        "positional arguments:\n" +
-        "\tjsonfile\t\t\tjson description of the machine\n\n" +
-        "\iinput\t\t\tinput of the machine\n\n" +
-        "optional arguments:\n" +
-        "\t-h, --help\t\t\tshow this help message and exi\n\n");
+    if args[1] == "--help" || args.len() != 3 {
+        panic!("usage: ft_turing [-h] jsonfile input
+        positional arguments:
+        \tjsonfile\t\t\tjson description of the machine
+        \tinput\t\t\tinput of the machine
+        optional arguments:
+        \t-h, --help\t\t\tshow this help message and exit");
     }
     let src = &args[1];
     let contents = fs::read_to_string(src).expect("Should have been able to read the file");
