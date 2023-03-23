@@ -1,30 +1,7 @@
-use std::{env, fs, collections::HashMap};
-use serde::{Deserialize, Serialize};
+use std::{env, fs};
+use description::Description;
 
-#[derive(Serialize, Deserialize)]
-enum Action {
-    RIGHT,
-    LEFT
-}
-
-#[derive(Serialize, Deserialize)]
-struct Transition {
-    read: char,
-    to_state: String,
-    write: char,
-    action: Action
-}
-
-#[derive(Serialize, Deserialize)]
-struct Description {
-    name: String,
-    alphabet: Vec<char>,
-    blank: char,
-    states: Vec<String>,
-    initial: String,
-    finals: Vec<String>,
-    transitions: HashMap<String, Vec<Transition>>
-}
+mod description;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
