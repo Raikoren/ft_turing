@@ -1,25 +1,29 @@
-use std::{env, fs};
+use std::{env, fs, error::Error};
 use description::Description;
 
 use crate::description::Action;
 
 mod description;
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>>{
     let args: Vec<String> = env::args().collect();
-    if args[1] == "--help" || args.len() != 3 {
-        panic!("usage: ft_turing [-h] jsonfile input
-        positional arguments:
-        \tjsonfile\t\t\tjson description of the machine
-        \tinput\t\t\tinput of the machine
-        optional arguments:
-        \t-h, --help\t\t\tshow this help message and exit");
+    if args[1] == "help" || args.len() != 3 {
+        print!("usage: ft_turing jsonfile input
+positional arguments:
+\tjsonfile\t\t\tjson description of the machine
+\tinput\t\t\t\tinput of the machine
+optional arguments:
+\thelp\t\t\tshow this help message and exit");
+        return Ok(())
     }
     let src = &args[1];
     let contents = fs::read_to_string(src).expect("Should have been able to read the file");
     let desc: Description = serde_json::from_str(&contents).expect("couldn't parse the description");
     let input: Vec<char> = args[2].chars().collect();
+    let desc = desc.check_description()?;
     run_machine(desc, input);
+    args.iter().for_each(|a| println!("{a}"));
+    Ok(())
 }
 
 fn run_machine(desc: Description, mut input: Vec<char>) {
