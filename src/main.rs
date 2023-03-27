@@ -21,6 +21,6 @@ optional arguments:
     let desc = Description::new(&contents)?;
     let input: Vec<char> = args[2].chars().collect();
     desc.check(&input)?;
-    desc.run(input);
+    desc.start(input)?;
     Ok(())
 }
