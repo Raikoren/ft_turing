@@ -33,7 +33,7 @@ impl Description {
         Ok(desc)
     }
 
-    pub fn check(&self) -> Result<(), &str> {
+    pub fn check(&self, input: &Vec<char>) -> Result<(), &str> {
         if !self.alphabet.contains(&self.blank) {
             return Err("blank character isn't part of the alphabet");
         }
@@ -59,6 +59,9 @@ impl Description {
             return Err(
                 "at least one transition isn´t valid",
             );
+        }
+        if !input.iter().all(|c| self.alphabet.contains(c)) {
+            return Err("input does not coincide with the description alphabet");
         }
         Ok(())
     }

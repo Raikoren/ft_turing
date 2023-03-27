@@ -20,7 +20,7 @@ optional arguments:
     let contents = fs::read_to_string(src)?;
     let desc = Description::new(&contents)?;
     let input: Vec<char> = args[2].chars().collect();
-    desc.check()?;
+    desc.check(&input)?;
     desc.run(input);
     Ok(())
 }
