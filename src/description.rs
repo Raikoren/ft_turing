@@ -1,3 +1,4 @@
+use colored::*;
 use serde::Deserialize;
 use serde_json::Error;
 use std::collections::HashMap;
@@ -25,6 +26,36 @@ pub struct Description {
     initial: String,
     finals: Vec<String>,
     transitions: HashMap<String, Vec<Transition>>,
+}
+
+fn print_tape(tape: &Vec<char>, head: &usize) {
+    tape.iter().enumerate().for_each(|(i, c)| {
+        if i == 0 {
+            print!("[");
+        }
+        if i == *head {
+            print!("{}", c.to_string().red().bold());
+        } else {
+            print!("{c}");
+        }
+        if i == tape.len() - 1 {
+            print!("]");
+        }
+    });
+}
+
+fn print_transition(state: &String, transition: &Transition) {
+    println!(
+        " ({}, {}) -> ({}, {}, {})",
+        state,
+        transition.read,
+        transition.to_state,
+        transition.write,
+        match transition.action {
+            Action::RIGHT => "RIGHT",
+            Action::LEFT => "LEFT",
+        }
+    )
 }
 
 impl Description {
@@ -63,22 +94,26 @@ impl Description {
 
     pub fn start(&self, tape: Vec<char>) -> Result<(), &str> {
         println!("running : {}", self.name);
-        println!("[{}]", tape.clone().into_iter().collect::<String>());
         self.run(&self.initial, 0, tape)
     }
 
     fn run(&self, state: &String, head: usize, mut tape: Vec<char>) -> Result<(), &str> {
+        print_tape(&tape, &head);
         if self.finals.contains(&state) {
-            return Ok(())
+            return Ok(());
         }
-        let transition = self
+        let transition = match self
             .transitions
             .get(state)
             .unwrap()
             .iter()
             .find(|&t| t.read == tape[head])
-            .unwrap();
+        {
+            Some(t) => t,
+            None => return Err("machine stopped : no transition found for current character"),
+        };
         tape[head] = transition.write;
+        print_transition(state, transition);
         self.run(
             &transition.to_state,
             match &transition.action {
@@ -87,16 +122,17 @@ impl Description {
                         tape.push(self.blank);
                     }
                     head + 1
-                },
+                }
                 Action::LEFT => {
                     if head == 0 {
                         tape.insert(0, self.blank);
                         0
+                    } else {
+                        head - 1
                     }
-                    else { head - 1 }
                 }
             },
-            tape
+            tape,
         )
     }
 }
