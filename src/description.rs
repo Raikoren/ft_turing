@@ -114,25 +114,24 @@ impl Description {
         };
         tape[head] = transition.write;
         print_transition(state, transition);
-        let head = match &transition.action {
-            Action::RIGHT => {
-                if head == tape.len() {
-                    tape.push(self.blank);
-                }
-                head + 1
-            }
-            Action::LEFT => {
-                if head == 0 {
-                    tape.insert(0, self.blank);
-                    0
-                } else {
-                    head - 1
-                }
-            }
-        };
         self.run(
             &transition.to_state,
-            head,
+            match &transition.action {
+                Action::RIGHT => {
+                    if head == tape.len() - 1 {
+                        tape.push(self.blank);
+                    }
+                    head + 1
+                }
+                Action::LEFT => {
+                    if head == 0 {
+                        tape.insert(0, self.blank);
+                        0
+                    } else {
+                        head - 1
+                    }
+                }
+            },
             tape,
         )
     }
