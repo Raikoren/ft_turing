@@ -86,6 +86,9 @@ impl Description {
         }) {
             return Err("at least one transition isn´t valid");
         }
+        if !input.iter().all(|c| &self.blank != c) {
+            return Err("input should not contain the blank character");
+        }
         if !input.iter().all(|c| self.alphabet.contains(c)) {
             return Err("input does not coincide with the description alphabet");
         }
