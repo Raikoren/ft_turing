@@ -122,12 +122,18 @@ impl Description {
             match &transition.action {
                 Action::RIGHT => {
                     if head == tape.len() - 1 {
+                        if tape[head] == self.blank && tape[head - 1] == self.blank {
+                            return Err("machine stopped : infinite loop suspected")
+                        }
                         tape.push(self.blank);
                     }
                     head + 1
                 }
                 Action::LEFT => {
                     if head == 0 {
+                        if tape[head] == self.blank && tape[head + 1] == self.blank {
+                            return Err("machine stopped : infinite loop suspected");
+                        }
                         tape.insert(0, self.blank);
                         0
                     } else {
