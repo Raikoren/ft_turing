@@ -2,10 +2,31 @@
     "name" : "unary_add",
     "alphabet": [ "1", ".", "+", "=" ],
     "blank" : ".",
-    "states" : [ "arg1", "arg2", "end", "HALT" ],
-    "initial" : "arg1",
-    "finals" : [ "HALT" ],
+    "states" : [ "arg1", "arg2", "end", "HALT", "ERROR", "check1", "go_back", "check2", "check_end" ],
+    "initial" : "check1",
+    "finals" : [ "HALT", "ERROR" ],
     "transitions" : {
+        "check1": [
+            { "read" : "1", "to_state": "check1", "write": "1", "action": "RIGHT"},
+            { "read" : "+", "to_state": "check2", "write": "+", "action": "RIGHT"},
+            { "read" : "=", "to_state": "ERROR", "write": "=", "action": "RIGHT"},
+            { "read" : ".", "to_state": "ERROR", "write": ".", "action": "RIGHT"}
+        ],
+        "check2": [
+            { "read" : "1", "to_state": "check2", "write": "1", "action": "RIGHT"},
+            { "read" : "+", "to_state": "ERROR", "write": "+", "action": "RIGHT"},
+            { "read" : "=", "to_state": "check_end", "write": "=", "action": "RIGHT"},
+            { "read" : ".", "to_state": "ERROR", "write": ".", "action": "RIGHT"}
+        ],
+        "check_end": [
+            { "read" : ".", "to_state": "go_back", "write": ".", "action": "LEFT"}
+        ],
+        "go_back": [
+            { "read" : "1", "to_state": "go_back", "write": "1", "action": "LEFT"},
+            { "read" : "+", "to_state": "go_back", "write": "+", "action": "LEFT"},
+            { "read" : "=", "to_state": "go_back", "write": "=", "action": "LEFT"},
+            { "read" : ".", "to_state": "arg1", "write": ".", "action": "RIGHT"}
+        ],
         "arg1": [
             { "read" : "1", "to_state": "arg1", "write": "1", "action": "RIGHT"},
             { "read" : ".", "to_state": "HALT", "write": ".", "action": "RIGHT"},
