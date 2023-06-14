@@ -17,6 +17,9 @@ optional arguments:
         return Ok(());
     }
     let src = &args[1];
+    if args[2].len() == 0 {
+        return Err("input shouldn't be empty".into());
+    }
     let contents = fs::read_to_string(src)?;
     let desc = Description::new(&contents)?;
     let input: Vec<char> = args[2].chars().collect();
